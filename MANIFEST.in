@@ -1,4 +1,4 @@
 include README.md
 include LICENSE
-recursive-include componentsDjangotype/settings *
-recursive-include componentsDjangotype/management *
+recursive-include componentsDjangoType/settings *
+recursive-include componentsDjangoType/management *
