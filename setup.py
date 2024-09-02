@@ -9,9 +9,9 @@ setup(
     description='A Django app for ...',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
-    url='https://github.com/tuusuario/my_django_package',
-    author='Tu Nombre',
-    author_email='tuemail@example.com',
+    url='https://github.com/jose-CR/componentsDjangotype',
+    author='Alejandro',
+    author_email='',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
