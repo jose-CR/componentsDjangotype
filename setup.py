@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='componentsDjangoType',
-    version='0.0.2',
+    version='0.0.3',
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
@@ -11,12 +11,12 @@ setup(
     long_description_content_type='text/markdown',
     url='https://github.com/jose-CR/componentsDjangoType',
     author='Alejandro',
-    author_email='your-email@example.com',
+    author_email='hjosealejandro21@gmail.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
+        'License :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
