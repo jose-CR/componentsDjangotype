@@ -38,7 +38,7 @@ python manage.py myapp components/my_component.html --type static
     - `.html`: `<div>Este es el contenido del componente.</div>`
     - `.js`: `console.log("Este es el contenido del componente.");`
     - `.css`: `/* Este es el contenido del componente */`
-    - Otras extensiones: contenido vacío
+- Si buscas el paquete de pip para descargarlo, aquí está: [Pypi](https://pypi.org/project/componentsDjangoType/)
 
 ## Licencia
 
