@@ -18,7 +18,7 @@ Este comando de Django te permite crear un componente HTML dentro del directorio
 
 ## Uso
 
-1. Ejecuta el comando en tu terminal: `python manage.py create_html_component <nombre_de_aplicación> <ruta_del_archivo> --type=<template|static>`
+1. Ejecuta el comando en tu terminal: `python manage.py createcomponent <nombre_de_aplicación> <carpeta/archivo> --type=<template|static>`
 2. Reemplaza `<nombre_de_aplicación>` con el nombre de la aplicación donde deseas crear el componente.
 3. Reemplaza `<ruta_del_archivo>` con la ruta donde deseas crear el componente dentro del directorio `templates` o `static` de la aplicación.
 4. La bandera `--type` especifica si deseas crear un componente en el directorio `templates` o `static`. Por defecto, se establece en `template`.
