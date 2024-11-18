@@ -11,6 +11,15 @@ class Command(BaseCommand):
         # Nombre de la aplicación a crear
         app_name = "Home"
 
+        # definiendoerrores
+        def write_file(file_path, content):
+            try:
+                with open(file_path, 'w') as file:
+                    file.write(content)
+                print(f"Archivo escrito correctamente: {file_path}")
+            except Exception as e:
+                print(f"Error al escribir el archivo {file_path}: {e}")
+
         # Paso 1: Solicitar el nombre de la aplicación principal al usuario
         project_name = input(
             "Por favor, ingresa el nombre de la aplicación principal del proyecto: ")
@@ -266,16 +275,6 @@ class Command(BaseCommand):
             write_file(template_file_path, content)
 
         # escritura de los archivos
-
-        # definiendoerrores
-
-        def write_file(file_path, content):
-            try:
-                with open(file_path, 'w') as file:
-                    file.write(content)
-                print(f"Archivo escrito correctamente: {file_path}")
-            except Exception as e:
-                print(f"Error al escribir el archivo {file_path}: {e}")
 
         # escritura del archivos js
         write_file(js_file_path, """
