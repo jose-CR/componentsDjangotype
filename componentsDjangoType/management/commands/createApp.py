@@ -262,6 +262,8 @@ class Command(BaseCommand):
         }
         for template_file, content in template_files.items():
             template_file_path = os.path.join(templates_dir, template_file)
+            # escritura de los archivoos html
+            write_file(template_file_path, content)
 
         # escritura de los archivos
 
@@ -277,275 +279,272 @@ class Command(BaseCommand):
 
         # escritura del archivos js
         write_file(js_file_path, """
-                    function closeAlert() {
-                        const alert = document.getElementById('alert');
-                        if (alert) {
-                            alert.remove();
-                            }
-                    }
+        function closeAlert() {
+            const alert = document.getElementById('alert');
+                if (alert) {
+                    alert.remove();
+                }
+            }
                     """)
 
         # escritura del archivo css
         write_file(css_file_path, """   
-            /* Navbar */
-            .navbar {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px 20px;
-                background-color: #333; /* Color de fondo */
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            }
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333; /* Color de fondo */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
 
-            /* Logo */
-            .navbar .logo a {
-                color: #ffffff;
-                font-size: 1.5em;
-                text-decoration: none;
-                transition: color 0.3s ease;
-            }
+/* Logo */
+.navbar .logo a {
+    color: #ffffff;
+    font-size: 1.5em;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+                   
+.navbar .logo a:hover {
+    color: #4a90e2; /* Hover del logo */
+}
 
-            .navbar .logo a:hover {
-                color: #4a90e2; /* Hover del logo */
-            }
+/* Links de navegación */
+.nav-links {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
 
-            /* Links de navegación */
-            .nav-links {
-                display: flex;
-                gap: 15px;
-                list-style: none;
-                margin: 0;
-                padding: 0;
-            }
+.nav-links .nav-item {
+    color: #ffffff;
+    font-size: 1em;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
 
-            .nav-links .nav-item {
-                color: #ffffff;
-                font-size: 1em;
-                text-decoration: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                transition: background-color 0.3s ease, color 0.3s ease;
-            }
+.nav-links .nav-item:hover {
+    background-color: #4a90e2; /* Hover */
+    color: #ffffff;
+}
 
-            .nav-links .nav-item:hover {
-                background-color: #4a90e2; /* Hover */
-                color: #ffffff;
-            }
+/* Estilos para dispositivos móviles */
+.menu-toggle {
+    display: none;
+}
 
-            /* Estilos para dispositivos móviles */
-            .menu-toggle {
-                display: none;
-            }
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: inline-block;
+        font-size: 1.5em;
+        color: #ffffff;
+        cursor: pointer;
+        padding: 8px 15px;
+    }
 
-            @media (max-width: 768px) {
-                .menu-toggle {
-                    display: inline-block;
-                    font-size: 1.5em;
-                    color: #ffffff;
-                    cursor: pointer;
-                    padding: 8px 15px;
-                }
+    .nav-links {
+        flex-direction: column;
+        position: absolute;
+        top: 100%;
+        right: 0;
+        width: 100%;
+        background-color: #333;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
 
-                .nav-links {
-                    flex-direction: column;
-                    position: absolute;
-                    top: 100%;
-                    right: 0;
-                    width: 100%;
-                    background-color: #333;
-                    max-height: 0;
-                    overflow: hidden;
-                    transition: max-height 0.3s ease;
-                }
+    /* Activar menú desplegable */
+    .nav-links.active {
+        max-height: 300px; /* Ajustar altura */
+    }
 
-                /* Activar menú desplegable */
-                .nav-links.active {
-                    max-height: 300px; /* Ajustar altura */
-                }
+    .nav-links .nav-item {
+        padding: 10px 20px;
+    }
+}
 
-                .nav-links .nav-item {
-                    padding: 10px 20px;
-                }
-            }
+/*  formularios  */
+/* Contenedor para centrar el formulario */
+.form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+}
 
-            /*  formularios  */
-            /* Contenedor para centrar el formulario */
-            .form-wrapper {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin-top: 50px;
-            }
+/* Contenedor del formulario */
+.form-container {
+    padding: 20px;
+    background: black; /* Fondo azul con transparencia */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+}
 
-            /* Contenedor del formulario */
-            .form-container {
-                padding: 20px;
-                background: black; /* Fondo azul con transparencia */
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                color: white;
-                text-align: center;
-                max-width: 400px;
-                width: 100%;
-            }
+/* Estilo del formulario */
+.form-control {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
 
-            /* Estilo del formulario */
-            .form-control {
-                display: flex;
-                flex-direction: column;
-                gap: 15px;
-            }
+/* Estilo para las etiquetas */
+label {
+    font-size: 0.9em;
+    color: #d1d5db; /* Color gris claro */
+    margin-bottom: 5px;
+    text-align: left;
+}
 
-            /* Estilo para las etiquetas */
-            label {
-                font-size: 0.9em;
-                color: #d1d5db; /* Color gris claro */
-                margin-bottom: 5px;
-                text-align: left;
-            }
+/* Estilo para los campos de entrada */
+input[type="text"],
+input[type="password"] {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+    color: #ffffff;
+    outline: none;
+    font-size: 1em;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
 
-            /* Estilo para los campos de entrada */
-            input[type="text"],
-            input[type="password"] {
-                padding: 10px;
-                background: rgba(255, 255, 255, 0.2);
-                border: 1px solid rgba(255, 255, 255, 0.3);
-                border-radius: 5px;
-                color: #ffffff;
-                outline: none;
-                font-size: 1em;
-                transition: background 0.3s ease, box-shadow 0.3s ease;
-            }
+input[type="text"]:focus,
+input[type="password"]:focus {
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+}
 
-            input[type="text"]:focus,
-            input[type="password"]:focus {
-                background: rgba(255, 255, 255, 0.4);
-                box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
-            }
+/* Estilo del botón */
+button[type="submit"] {
+    padding: 10px;
+    background: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
 
-            /* Estilo del botón */
-            button[type="submit"] {
-                padding: 10px;
-                background: #4a90e2;
-                color: white;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                transition: background 0.3s ease;
-            }
-
-            button[type="submit"]:hover {
-                background: #357ab8;
-            }
+button[type="submit"]:hover {
+    background: #357ab8;
+}
             
-            /* alert */
+/* alert */
 
-            /* Estilos para la alerta */
-            .alert {
-                max-width: 400px;
-                background-color: #333;
-                color: #ffffff;
-                border-radius: 8px;
-                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-                margin: 0 auto;
-                position: relative;
-                top: 20px;
-                padding: 15px;
-            }
+/* Estilos para la alerta */
+.alert {
+    max-width: 400px;
+    background-color: #333;
+    color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin: 0 auto;
+    position: relative;
+    top: 20px;
+    padding: 15px;
+}
 
-            .alert-content {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
+.alert-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-            .close-btn {
-                background: none;
-                border: none;
-                cursor: pointer;
-                color: #ffffff;
-                transition: color 0.3s ease;
-            }
+.close-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
 
-            .close-btn:hover {
-                color: #ff6b6b;
-            }
+.close-btn:hover {
+    color: #ff6b6b;
+}
 
-            .close-icon {
-                width: 16px;
-                height: 16px;
-            }
+.close-icon {
+    width: 16px;
+    height: 16px;
+}
 
-            /* logged */
+/* logged */
 
-            /* Estilos para el contenedor del bloque */
-            .layout-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                background-color: #f0f4f8;
-                font-family: Arial, sans-serif;
-            }
+/* Estilos para el contenedor del bloque */
+.layout-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f4f8;
+    font-family: Arial, sans-serif;
+}                   
 
-                /* Estilos para el título */
-            .layout-container h1 {
-                font-size: 2.5rem;
-                color: #4a90e2;
-                font-weight: bold;
-                text-align: center;
-                padding: 20px;
-                border-radius: 8px;
-                background: #ffffff;
-                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-            """)
+/* Estilos para el título */
+.layout-container h1 {
+    font-size: 2.5rem;
+    color: #4a90e2;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+""")
         # escritura del archivos que estan en la carpeta layouts
         write_file(layout_files_path, """
-                {% load static %}
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-                    <title>django components</title>
-                </head>
-                <body class="bg-gray-100 text-gray-800">
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <title>django components</title>
+</head>
+<body class="bg-gray-100 text-gray-800">
                     
-                    <nav class="navbar">
-                        <div class="logo">
-                            <a href="{% url 'home' %}">
-                                <i class="fa-solid fa-house"></i>
-                            </a>
-                        </div>
-                        <div class="menu-toggle">
-                            <i class="fa fa-bars"></i>
-                        </div>
-                        <ul class="nav-links">
-                            {% if user.is_authenticated %}
-                                <li><a href="{% url 'logout' %}" class="nav-item">Logout</a></li>
-                            {% else %}
-                                <li><a href="{% url 'signup' %}" class="nav-item">Sign Up</a></li>
-                                <li><a href="{% url 'login' %}" class="nav-item">Login</a></li>
-                            {% endif %}
-                        </ul>
-                    </nav>
+<nav class="navbar">
+    <div class="logo">
+        <a href="{% url 'home' %}">
+            <i class="fa-solid fa-house"></i>
+        </a>
+    </div>
+    <div class="menu-toggle">
+        <i class="fa fa-bars"></i>
+    </div>
+    <ul class="nav-links">
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout' %}" class="nav-item">Logout</a></li>
+        {% else %}
+            <li><a href="{% url 'signup' %}" class="nav-item">Sign Up</a></li>
+            <li><a href="{% url 'login' %}" class="nav-item">Login</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
-                    <div class="container mx-auto p-4">
-                        {% block layout %}
-                        {% endblock %}
-                    </div>
+<div class="container mx-auto p-4">
+    {% block layout %}
+    {% endblock %}
+</div>
 
-                    {% block script %}
-                    {% endblock %}
-                </body>
-                </html>
-                """)
-
-        # escritura de los archivoos html
-        write_file(template_file_path, content)
+{% block script %}
+{% endblock %}
+</body>
+</html>
+""")
 
         self.stdout.write(self.style.SUCCESS(
             "Comando ejecutado exitosamente."))
