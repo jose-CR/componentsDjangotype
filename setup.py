@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='componentsDjangoType',
-    version='1.0.8',
+    version='1.0.9',
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
