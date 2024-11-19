@@ -170,49 +170,48 @@ class Command(BaseCommand):
 
             # Contenido de views.py
             views_content = """from django.shortcuts import render
-        from django.contrib.auth.decorators import login_required
-        from Home.services.authentication import Authentication
+from django.contrib.auth.decorators import login_required
+from Home.services.authentication import Authentication
 
-        # Create your views here.
+# Create your views here.
 
-        def home(request):
-            return render(request, 'home.html')
-
-
-        def signup(request):
-            return Authentication.get_signup(request)
+def home(request):
+    return render(request, 'home.html')
 
 
-        def signout(request):
-            return Authentication.get_signout(request)
+def signup(request):
+    return Authentication.get_signup(request)
 
 
-        def signing(request):
-            return Authentication.get_signing(request)
+def signout(request):
+    return Authentication.get_signout(request)
 
 
-        @login_required
-        def logged(request):
-            return Authentication.get_logged(request)
+def signing(request):
+    return Authentication.get_signing(request)
 
 
-        def custom_dispatch(request, *args, **kwargs):
-            return Authentication.dispatch(request, *args, **kwargs)
-        """
+@login_required
+def logged(request):
+    return Authentication.get_logged(request)
+
+
+def custom_dispatch(request, *args, **kwargs):
+    return Authentication.dispatch(request, *args, **kwargs)
+"""
 
             # Contenido de urls.py
             urls_content = """from django.urls import path
-        from . import views
+from . import views
 
-        urlpatterns = [
-            path("", views.home, name='home'),
-            path("signup", views.signup, name='signup'),
-            path("login", views.signing, name='login'),
-            path("logout", views.signout, name='logout'),
-            path("logged", views.logged, name='logged'),
-        ]
-        """
-
+urlpatterns = [
+    path("", views.home, name='home'),
+    path("signup", views.signup, name='signup'),
+    path("login", views.signing, name='login'),
+    path("logout", views.signout, name='logout'),
+    path("logged", views.logged, name='logged'),
+]
+"""
             # Escritura de views.py
             try:
                 with open(views_path, 'w') as views_file:
