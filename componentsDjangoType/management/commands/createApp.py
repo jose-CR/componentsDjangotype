@@ -161,7 +161,77 @@ class Command(BaseCommand):
             self.stdout.write(
                 f"El archivo '{authentication_file_path}' ya existe.")
 
-        # Paso 6: Crear la carpeta templates y estatic y los archivos HTML CSS y JS
+        home_dir = "Home"
+
+        def modify_views_and_urls():
+            # Rutas de los archivos
+            views_path = os.path.join(home_dir, 'views.py')
+            urls_path = os.path.join(home_dir, 'urls.py')
+
+            # Contenido de views.py
+            views_content = """from django.shortcuts import render
+        from django.contrib.auth.decorators import login_required
+        from Home.services.authentication import Authentication
+
+        # Create your views here.
+
+        def home(request):
+            return render(request, 'home.html')
+
+
+        def signup(request):
+            return Authentication.get_signup(request)
+
+
+        def signout(request):
+            return Authentication.get_signout(request)
+
+
+        def signing(request):
+            return Authentication.get_signing(request)
+
+
+        @login_required
+        def logged(request):
+            return Authentication.get_logged(request)
+
+
+        def custom_dispatch(request, *args, **kwargs):
+            return Authentication.dispatch(request, *args, **kwargs)
+        """
+
+            # Contenido de urls.py
+            urls_content = """from django.urls import path
+        from . import views
+
+        urlpatterns = [
+            path("", views.home, name='home'),
+            path("signup", views.signup, name='signup'),
+            path("login", views.signing, name='login'),
+            path("logout", views.signout, name='logout'),
+            path("logged", views.logged, name='logged'),
+        ]
+        """
+
+            # Escritura de views.py
+            try:
+                with open(views_path, 'w') as views_file:
+                    views_file.write(views_content.strip())
+                print(f"Archivo modificado correctamente: {views_path}")
+            except Exception as e:
+                print(f"Error al modificar {views_path}: {e}")
+
+            # Escritura de urls.py
+            try:
+                with open(urls_path, 'w') as urls_file:
+                    urls_file.write(urls_content.strip())
+                print(f"Archivo modificado correctamente: {urls_path}")
+            except Exception as e:
+                print(f"Error al modificar {urls_path}: {e}")
+
+        modify_views_and_urls()
+
+        # Paso 8: Crear la carpeta templates y estatic y los archivos HTML CSS y JS
         templates_dir = os.path.join(app_name, 'templates')
         static_dir = os.path.join(app_name, 'static')
 
