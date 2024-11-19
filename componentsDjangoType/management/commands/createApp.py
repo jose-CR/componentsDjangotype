@@ -109,7 +109,7 @@ class Command(BaseCommand):
                     "    @staticmethod\n"
                     "    def get_signup(request):\n"
                     "        if request.method == 'GET':\n"
-                    "            return render(request, 'singup.html', {\n"
+                    "            return render(request, 'signup.html', {\n"
                     "                'form': UserCreationForm()\n"
                     "            })\n"
                     "        elif request.method == 'POST':\n"
@@ -122,11 +122,11 @@ class Command(BaseCommand):
                     "                    login(request, user)\n"
                     "                    return redirect('logged')\n"
                     "                except IntegrityError:\n"
-                    "                    return render(request, 'singup.html', {\n"
+                    "                    return render(request, 'signup.html', {\n"
                     "                        'form': UserCreationForm(),\n"
                     "                        'error': 'User already exists'\n"
                     "                    })\n"
-                    "            return render(request, 'singup.html', {\n"
+                    "            return render(request, 'signup.html', {\n"
                     "                'form': UserCreationForm(),\n"
                     "                'error': 'Passwords do not match'\n"
                     "            })\n\n"
@@ -312,9 +312,7 @@ urlpatterns = [
     </div>
 </div>
 {% endblock %}
-{% block script %}
-<script src="{% static 'js/alertErrors.js'%}"></script>
-{% endblock %}""",
+""",
             'login.html': """{% extends "layouts/index.html" %}
 {% block layout %}
 {% if error %}
@@ -347,9 +345,7 @@ urlpatterns = [
     </div>
 </div>
 {% endblock %}
-{% block script %}
-<script src="{% static 'js/alertErrors.js'%}"></script>
-{% endblock %}""",
+""",
             'logged.html': """{% extends "layouts/index.html" %}
 {% block layout %}
   <div class="layout-container">
@@ -625,8 +621,7 @@ button[type="submit"]:hover {
     {% endblock %}
 </div>
 
-{% block script %}
-{% endblock %}
+<script src="{% static 'js/alertErrors.js'%}"></script>
 </body>
 </html>
 """)
