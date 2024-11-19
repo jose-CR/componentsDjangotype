@@ -28,8 +28,27 @@ class Command(BaseCommand):
         if not os.path.exists(app_name):
             self.stdout.write(f"Creando la aplicación '{app_name}'...")
             call_command('startapp', app_name)
+            if os.path.exists(app_name):
+                self.stdout.write(f"La aplicación '{
+                                  app_name}' fue creada exitosamente.")
+            else:
+                self.stdout.write(
+                    f"Error: No se pudo crear la aplicación '{app_name}'.")
         else:
             self.stdout.write(f"La aplicación '{app_name}' ya existe.")
+
+        # Agregar automáticamente 'Home' a INSTALLED_APPS
+        settings_path = os.path.join(project_name, 'settings.py')
+
+        with open(settings_path, 'r') as file:
+            settings_content = file.read()
+
+        if f"'{app_name}'" not in settings_content:
+            with open(settings_path, 'a') as file:
+                file.write(f"\nINSTALLED_APPS.append('{app_name}')\n")
+            self.stdout.write(f"'{app_name}' fue agregado a INSTALLED_APPS.")
+        else:
+            self.stdout.write(f"'{app_name}' ya está en INSTALLED_APPS.")
 
         # Paso 3: Crear el archivo urls.py en la aplicación "Home" si no existe
         urls_path = os.path.join(app_name, 'urls.py')
