@@ -26,7 +26,7 @@ class Command(BaseCommand):
         creation = DjangoProjectManager(app_name=app_name, project_name=project_name)
 
         # Paso 2: Crear la aplicación "Home" si no existe
-        creation.app_name()
+        creation.create_app()
 
         # Agregar automáticamente 'Home' a INSTALLED_APPS
         creation.installed_app()
