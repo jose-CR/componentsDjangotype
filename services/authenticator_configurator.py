@@ -115,20 +115,25 @@ urlpatterns = [
                 else:
                     self.stdout.write(f"No se encontró la lista 'urlpatterns' en '{urls_path}'.")
 
+    def creation_auth(self):
+        services_dir = os.path.join(self.app_name, 'services',)
+        os.makedirs(services_dir, exist_ok=True)
 
+        authentication_path = os.path.join(services_dir, 'authentication.py')
 
+        if not os.path.exists(authentication_path):
+            self.stdout.write(f"Creando el archivo '{authentication_path}'...")
 
+            auth_path = os.path.join(self.app_name, 'services', 'authentication', 'auth.py')
 
+            with open(auth_path, 'r') as file:
+                auth_code = file.read()
 
-
-
-
-
-
-
-
-
-
+            with open(authentication_path, 'w') as file:
+                file.write(auth_code)
+            self.stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue escrito.")
+        else:
+            self.stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
 
 
