@@ -1,8 +1,7 @@
-# componentsDjangoType/management/commands/createcomponentApp.py
 import os
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
-
+from services.authenticator_configurator import DjangoProjectManager
 
 class Command(BaseCommand):
     help = 'Crea una aplicación llamada Home, estructura de carpetas y configura urls automáticamente en el proyecto especificado'
@@ -23,72 +22,19 @@ class Command(BaseCommand):
         # Paso 1: Solicitar el nombre de la aplicación principal al usuario
         project_name = input(
             "Por favor, ingresa el nombre de la aplicación principal del proyecto: ")
+        
+        creation = DjangoProjectManager(app_name=app_name, project_name=project_name)
 
         # Paso 2: Crear la aplicación "Home" si no existe
-        if not os.path.exists(app_name):
-            self.stdout.write(f"Creando la aplicación '{app_name}'...")
-            call_command('startapp', app_name)
-            if os.path.exists(app_name):
-                self.stdout.write(f"La aplicación '{
-                                  app_name}' fue creada exitosamente.")
-            else:
-                self.stdout.write(
-                    f"Error: No se pudo crear la aplicación '{app_name}'.")
-        else:
-            self.stdout.write(f"La aplicación '{app_name}' ya existe.")
+        creation.app_name()
 
         # Agregar automáticamente 'Home' a INSTALLED_APPS
-        settings_path = os.path.join(project_name, 'settings.py')
-
-        with open(settings_path, 'r') as file:
-            settings_content = file.read()
-
-        if f"'{app_name}'" not in settings_content:
-            with open(settings_path, 'a') as file:
-                file.write(f"\nINSTALLED_APPS.append('{app_name}')\n")
-            self.stdout.write(f"'{app_name}' fue agregado a INSTALLED_APPS.")
-        else:
-            self.stdout.write(f"'{app_name}' ya está en INSTALLED_APPS.")
+        creation.installed_app()
 
         # Paso 3: Crear el archivo urls.py en la aplicación "Home" si no existe
-        urls_path = os.path.join(app_name, 'urls.py')
-        if not os.path.exists(urls_path):
-            self.stdout.write(f"Creando el archivo '{urls_path}'...")
-            with open(urls_path, 'w') as f:
-                f.write(
-                    "from django.urls import path\n\n"
-                    "urlpatterns = [\n"
-                    "    # Añade tus rutas aquí\n"
-                    "]\n"
-                )
-        else:
-            self.stdout.write(f"El archivo '{urls_path}' ya existe.")
+        creation.create_urls()
 
-        # Paso 4: Modificar el archivo urls.py principal del proyecto
-        project_urls_path = os.path.join(project_name, 'urls.py')
-        if os.path.exists(project_urls_path):
-            with open(project_urls_path, 'r') as f:
-                content = f.read()
-
-            include_statement = "path('', include('Home.urls'))"
-            if include_statement not in content:
-                self.stdout.write(f"Añadiendo la ruta '{
-                                  include_statement}' al archivo urls.py principal...")
-                with open(project_urls_path, 'a') as f:
-                    f.write(
-                        "\nfrom django.urls import include, path\n\n"
-                        "urlpatterns += [\n"
-                        f"    {include_statement},\n"
-                        "]\n"
-                    )
-            else:
-                self.stdout.write(
-                    "La ruta ya existe en el archivo urls.py principal.")
-        else:
-            self.stdout.write(f"No se encontró el archivo principal urls.py en '{
-                              project_urls_path}'. Asegúrate de que el nombre del proyecto sea correcto.")
-
-        # Paso 5: Crear la carpeta services y el archivo authentication.py en Home
+        # Paso 4: Crear la carpeta services y el archivo authentication.py en Home
         services_dir = os.path.join(app_name, 'services')
         # Crea la carpeta si no existe
         os.makedirs(services_dir, exist_ok=True)
