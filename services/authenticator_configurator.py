@@ -3,7 +3,7 @@ import ast
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
-class DjangoProjectManager:
+class DjangoProjectManager(BaseCommand):
     def __init__(self, app_name, project_name):
         self.app_name = app_name
         self.project_name = project_name
@@ -46,7 +46,7 @@ class DjangoProjectManager:
             # Comprobar si la aplicación no está ya en INSTALLED_APPS
             if f"'{self.app_name}'" not in installed_apps_content:
                 # Insertar la aplicación dentro de la lista
-                new_installed_apps = installed_apps_content[:-1] + f",\n    '{self.app_name}'\n]"
+                new_installed_apps = installed_apps_content[:-1] + f"\n'{self.app_name}',\n]"
 
                 # Reemplazar el bloque INSTALLED_APPS con la nueva lista
                 new_settings_content = settings_content[:installed_apps_start] + new_installed_apps + settings_content[installed_apps_end:]
@@ -115,29 +115,29 @@ urlpatterns = [
                 else:
                     self.stdout.write(f"No se encontró la lista 'urlpatterns' en '{urls_path}'.")
 
-def creation_auth(self):
-    services_dir = os.path.join(self.app_name, 'services')
-    authentication_dir = os.path.join(services_dir, 'authentication')
-    os.makedirs(authentication_dir, exist_ok=True)
+    def creation_auth(self):
+        services_dir = os.path.join(self.app_name, 'services')
+        authentication_dir = os.path.join(services_dir, 'authentication')
+        os.makedirs(authentication_dir, exist_ok=True)
 
-    authentication_path = os.path.join(authentication_dir, 'auth.py')
+        authentication_path = os.path.join(authentication_dir, 'auth.py')
 
-    if not os.path.exists(authentication_path):
-        self.stdout.write(f"Creando el archivo '{authentication_path}'...")
+        if not os.path.exists(authentication_path):
+            self.stdout.write(f"Creando el archivo '{authentication_path}'...")
 
-        auth_path = os.path.join(self.app_name, 'services', 'authentication', 'auth.py')
+            auth_path = os.path.join(self.app_name, 'services', 'authentication', 'auth.py')
 
-        # Leer el código del archivo de origen
-        with open(auth_path, 'r') as file:
-            auth_code = file.read()
+            # Leer el código del archivo de origen
+            with open(auth_path, 'r') as file:
+                auth_code = file.read()
 
-        # Escribir el código en el archivo de destino
-        with open(authentication_path, 'w') as file:
-            file.write(auth_code)
+            # Escribir el código en el archivo de destino
+            with open(authentication_path, 'w') as file:
+                file.write(auth_code)
 
-        self.stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue escrito.")
-    else:
-        self.stdout.write(f"El archivo '{authentication_path}' ya existe.")
+            self.stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue escrito.")
+        else:
+            self.stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
 
 
