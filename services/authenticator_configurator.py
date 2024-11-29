@@ -2,6 +2,7 @@ import os
 import ast
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
+from services.authentication import auth
 
 class DjangoProjectManager:
     def __init__(self, app_name, project_name):
@@ -46,7 +47,7 @@ class DjangoProjectManager:
             # Comprobar si la aplicación no está ya en INSTALLED_APPS
             if f"'{self.app_name}'" not in installed_apps_content:
                 # Insertar la aplicación dentro de la lista
-                new_installed_apps = installed_apps_content[:-1] + f"'{self.app_name}',\n]"
+                new_installed_apps = installed_apps_content[:-1] + f"   '{self.app_name}',\n]"
 
                 # Reemplazar el bloque INSTALLED_APPS con la nueva lista
                 new_settings_content = settings_content[:installed_apps_start] + new_installed_apps + settings_content[installed_apps_end:]
@@ -118,11 +119,13 @@ urlpatterns = [
     def creation_auth(self, stdout):
         services_dir = os.path.join(self.app_name, 'services')
         authentication_dir = os.path.join(services_dir, 'authentication')
-        os.makedirs(authentication_dir, exist_ok=True) 
+        os.makedirs(authentication_dir, exist_ok=True)
 
+        # Ruta para el nuevo archivo a crear
         authentication_path = os.path.join(authentication_dir, 'authentication.py')
 
-        auth_source_path = os.path.abspath('services/authentication/auth.py')
+        # Usar el atributo __file__ del módulo 'auth' para obtener la ruta del archivo fuente
+        auth_source_path = os.path.abspath(auth.__file__)
 
         if not os.path.exists(auth_source_path):
             stdout.write(f"El archivo fuente '{auth_source_path}' no existe. Verifica la instalación del paquete.")
