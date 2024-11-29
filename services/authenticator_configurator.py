@@ -158,26 +158,19 @@ path('', include('home.urls'))
         # Crear el directorio si no existe
         os.makedirs(home_dir, exist_ok=True)
 
-        # Obtener la ruta absoluta de los archivos fuente
-        views_source_path = os.path.abspath(views_page.__file__)
-        urls_source_path = os.path.abspath(urls_page.__file__)
-
-        # Comprobar si los archivos fuente existen
+        # Verificar y crear views.py
+        views_source_path = os.path.abspath(views_page.__file__)  # Validar existencia
         if not os.path.exists(views_source_path):
-            stdout.write(f"El archivo fuente '{views_source_path}' no existe. Verifica la instalación del paquete.\n")
-            creation = input("¿Quieres crear el archivo 'views.py'? (s/n): ")
-            if creation.lower() == 's':
-                self.create_file(views_source_path, views_path, stdout)
-            else:
-                return
+            stdout.write(f"El archivo fuente '{views_source_path}' no existe.\n")
+        else:
+            self.create_file(views_source_path, views_path, stdout)
 
+        # Verificar y crear urls.py
+        urls_source_path = os.path.abspath(urls_page.__file__)  # Validar existencia
         if not os.path.exists(urls_source_path):
-            stdout.write(f"El archivo fuente '{urls_source_path}' no existe. Verifica la instalación del paquete.\n")
-            creation = input("¿Quieres crear el archivo 'urls.py'? (s/n): ")
-            if creation.lower() == 's':
-                self.create_file(urls_source_path, urls_path, stdout)
-            else:
-                return
+            stdout.write(f"El archivo fuente '{urls_source_path}' no existe.\n")
+        else:
+            self.create_file(urls_source_path, urls_path, stdout)
 
     def create_file(self, source_path, dest_path, stdout):
         try:
