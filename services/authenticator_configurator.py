@@ -122,7 +122,7 @@ urlpatterns = [
 
         authentication_path = os.path.join(authentication_dir, 'authentication.py')
 
-        auth_source_path = os.path.abspath('authentication/auth.py')
+        auth_source_path = os.path.abspath('services/authentication/auth.py')
 
         if not os.path.exists(auth_source_path):
             stdout.write(f"El archivo fuente '{auth_source_path}' no existe. Verifica la instalación del paquete.")
