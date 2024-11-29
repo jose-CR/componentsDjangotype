@@ -36,9 +36,7 @@ class Command(BaseCommand):
         # Paso 4: Crear la carpeta services y el archivo authentication.py en Home
         creation.creation_auth(self.stdout)
 
-        # 5 creacion de las carpetas views y urls.py
-        creation.create_views_urls(self.stdout)
-
+        creation.create_views_urls(self. stdout)
 
         # Paso 8: Crear la carpeta templates y estatic y los archivos HTML CSS y JS
         templates_dir = os.path.join(app_name, 'templates')
