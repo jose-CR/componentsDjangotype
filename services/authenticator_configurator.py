@@ -83,33 +83,28 @@ path('', include('home.urls'))
     """)
         else:
             # Leer el contenido actual del archivo
-            stdout.write(f"El archivo '{project_urls_path}' ya existe. Verificando contenido...")
+            stdout.write(f"El archivo '{project_urls_path}' ya existe. Verificando contenido...\n")
             with open(project_urls_path, 'r') as f:
                 urls_content = f.read()
 
             updated = False
 
-            # Verificar o agregar el import de 'include'
+            # Verificar si 'include' está importado
             if 'include' not in urls_content:
-                stdout.write("Agregando 'include' a los imports.")
+                stdout.write("Agregando 'include' a los imports.\n")
                 urls_content = urls_content.replace(
                     "from django.urls import path",
-                    "from django.urls import path, include"
+                    "from django.urls import path, include"  # Asegura que 'include' se agregue
                 )
                 updated = True
 
-            # Verificar o agregar la lista urlpatterns
-            if 'urlpatterns = [' not in urls_content:
-                stdout.write("No se encontró 'urlpatterns'. Creando la lista de rutas desde cero.")
-                urls_content += "\nurlpatterns = [\n    path('admin/', admin.site.urls),\n]\n"
-                updated = True
-
-            # Verificar o agregar la ruta para 'home.urls'
+            # Verificar si la ruta de 'Home.urls' está en 'urlpatterns'
             if "include('home.urls')" not in urls_content:
-                stdout.write("Agregando ruta para 'home.urls'.")
+                stdout.write("Agregando ruta para 'home.urls'.\n")
+                # Asegúrate de agregar la ruta en el lugar adecuado dentro de 'urlpatterns'
                 urls_content = urls_content.replace(
                     "urlpatterns = [",
-                    "urlpatterns = [\n    path('', include('home.urls')),\n"
+                    "urlpatterns = [\n    path('', include('home.urls')),  # Ruta para home\n"
                 )
                 updated = True
 
@@ -117,9 +112,9 @@ path('', include('home.urls'))
             if updated:
                 with open(project_urls_path, 'w') as f:
                     f.write(urls_content)
-                stdout.write(f"El archivo '{project_urls_path}' fue actualizado.")
+                stdout.write(f"El archivo '{project_urls_path}' fue actualizado.\n")
             else:
-                stdout.write(f"No fue necesario realizar cambios en '{project_urls_path}'.")
+                stdout.write(f"No fue necesario realizar cambios en '{project_urls_path}'.\n")
 
     def creation_auth(self, stdout):
         services_dir = os.path.join(self.app_name, 'services')
