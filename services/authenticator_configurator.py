@@ -115,36 +115,36 @@ urlpatterns = [
                 else:
                     stdout.write(f"No se encontró la lista 'urlpatterns' en '{urls_path}'.")
 
-def creation_auth(self, stdout):
-    services_dir = os.path.join(self.app_name, 'services')
-    authentication_dir = os.path.join(services_dir, 'authentication')
-    os.makedirs(authentication_dir, exist_ok=True) 
+    def creation_auth(self, stdout):
+        services_dir = os.path.join(self.app_name, 'services')
+        authentication_dir = os.path.join(services_dir, 'authentication')
+        os.makedirs(authentication_dir, exist_ok=True) 
 
-    authentication_path = os.path.join(authentication_dir, 'authentication.py')
+        authentication_path = os.path.join(authentication_dir, 'authentication.py')
 
-    auth_source_path = os.path.abspath('authentication/auth.py')
+        auth_source_path = os.path.abspath('authentication/auth.py')
 
-    if not os.path.exists(auth_source_path):
-        stdout.write(f"El archivo fuente '{auth_source_path}' no existe. Verifica la instalación del paquete.")
-        return
+        if not os.path.exists(auth_source_path):
+            stdout.write(f"El archivo fuente '{auth_source_path}' no existe. Verifica la instalación del paquete.")
+            return
 
-    if not os.path.exists(authentication_path):
-        stdout.write(f"Creando el archivo '{authentication_path}'...")
+        if not os.path.exists(authentication_path):
+            stdout.write(f"Creando el archivo '{authentication_path}'...")
 
-        # Leer el contenido de 'auth.py' del paquete
-        try:
-            with open(auth_source_path, 'r') as source_file:
-                auth_code = source_file.read()
+            # Leer el contenido de 'auth.py' del paquete
+            try:
+                with open(auth_source_path, 'r') as source_file:
+                    auth_code = source_file.read()
 
-            # Escribir el contenido en el nuevo archivo 'authentication.py'
-            with open(authentication_path, 'w') as dest_file:
-                dest_file.write(auth_code)
+                # Escribir el contenido en el nuevo archivo 'authentication.py'
+                with open(authentication_path, 'w') as dest_file:
+                    dest_file.write(auth_code)
 
-            stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue copiado.")
-        except Exception as e:
-            stdout.write(f"Error al copiar el archivo: {e}")
-    else:
-        stdout.write(f"El archivo '{authentication_path}' ya existe.")
+                stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue copiado.")
+            except Exception as e:
+                stdout.write(f"Error al copiar el archivo: {e}")
+        else:
+            stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
 
 
