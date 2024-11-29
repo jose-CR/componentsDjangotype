@@ -31,10 +31,10 @@ class Command(BaseCommand):
         creation.installed_app()
 
         # Paso 3: Crear el archivo urls.py en la aplicación "Home" si no existe
-        creation.create_urls()
+        creation.create_urls(self.stdout)
 
         # Paso 4: Crear la carpeta services y el archivo authentication.py en Home
-        creation.creation_auth()
+        creation.creation_auth(self.stdout)
 
         home_dir = "Home"
 

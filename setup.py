@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='componentsDjangoType',
-    version='2.0.10',
+    version='2.0.11',
     packages=find_packages(),
     include_package_data=True,
     license='MIT',
@@ -19,8 +19,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Framework :: Django :: 3.2',
     ],
     install_requires=[
