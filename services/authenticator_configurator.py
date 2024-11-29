@@ -3,6 +3,7 @@ import ast
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from services.authentication import auth
+from services.home import views_page, urls_page
 
 class DjangoProjectManager:
     def __init__(self, app_name, project_name):
@@ -149,7 +150,48 @@ path('', include('home.urls'))
         else:
             stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
+    def create_views_urls(self, stdout):
+        home_dir = 'Home'
+        views_path = os.path.join(home_dir, 'views.py')
+        urls_path = os.path.join(home_dir, 'urls.py')
 
+        # Crear el directorio si no existe
+        os.makedirs(home_dir, exist_ok=True)
+
+        # Obtener la ruta absoluta de los archivos fuente
+        views_source_path = os.path.abspath(views_page.__file__)
+        urls_source_path = os.path.abspath(urls_page.__file__)
+
+        # Comprobar si los archivos fuente existen
+        if not os.path.exists(views_source_path):
+            stdout.write(f"El archivo fuente '{views_source_path}' no existe. Verifica la instalación del paquete.\n")
+            creation = input("¿Quieres crear el archivo 'views.py'? (s/n): ")
+            if creation.lower() == 's':
+                self.create_file(views_source_path, views_path, stdout)
+            else:
+                return
+
+        if not os.path.exists(urls_source_path):
+            stdout.write(f"El archivo fuente '{urls_source_path}' no existe. Verifica la instalación del paquete.\n")
+            creation = input("¿Quieres crear el archivo 'urls.py'? (s/n): ")
+            if creation.lower() == 's':
+                self.create_file(urls_source_path, urls_path, stdout)
+            else:
+                return
+
+    def create_file(self, source_path, dest_path, stdout):
+        try:
+            # Leer el contenido del archivo fuente
+            with open(source_path, 'r') as source_file:
+                code = source_file.read()
+
+            # Crear y escribir el contenido en el archivo de destino
+            with open(dest_path, 'w') as dest_file:
+                dest_file.write(code)
+
+            stdout.write(f"El archivo '{dest_path}' fue creado y el código fue copiado.\n")
+        except Exception as e:
+            stdout.write(f"Error al copiar el archivo: {e}\n")
 
 
 
