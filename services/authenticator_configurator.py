@@ -47,7 +47,7 @@ class DjangoProjectManager:
             # Comprobar si la aplicación no está ya en INSTALLED_APPS
             if f"'{self.app_name}'" not in installed_apps_content:
                 # Insertar la aplicación dentro de la lista
-                new_installed_apps = installed_apps_content[:-1] + f"   '{self.app_name}',\n]"
+                new_installed_apps = installed_apps_content[:-1] + f"    '{self.app_name}',\n]"
 
                 # Reemplazar el bloque INSTALLED_APPS con la nueva lista
                 new_settings_content = settings_content[:installed_apps_start] + new_installed_apps + settings_content[installed_apps_end:]
@@ -73,28 +73,23 @@ class DjangoProjectManager:
             stdout.write(f"Creando el archivo '{project_urls_path}'...")
             with open(project_urls_path, 'w') as f:
                 f.write("""from django.contrib import admin
-from django.urls import path, include\n\n
+from django.urls import path, include  # Asegúrate de incluir include
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('home.urls')),
+path('admin/', admin.site.urls),
+path('', include('home.urls'))
     # Añade tus rutas aquí
-]\n""")
+]
+    """)
         else:
-            # Si el archivo ya existe, lo leemos y agregamos nuevas rutas
+            # Leer el contenido actual del archivo
             stdout.write(f"El archivo '{project_urls_path}' ya existe. Verificando contenido...")
-            
             with open(project_urls_path, 'r') as f:
                 urls_content = f.read()
 
             updated = False
 
-            # Verificar si 'urlpatterns' existe
-            if 'urlpatterns = [' not in urls_content:
-                stdout.write(f"No se encontró 'urlpatterns'. Creando la lista de rutas desde cero.")
-                urls_content += "\nurlpatterns = [\n    path('admin/', admin.site.urls),\n]\n"
-                updated = True
-
-            # Agregar 'include' si no está presente
+            # Verificar o agregar el import de 'include'
             if 'include' not in urls_content:
                 stdout.write("Agregando 'include' a los imports.")
                 urls_content = urls_content.replace(
@@ -103,7 +98,13 @@ urlpatterns = [
                 )
                 updated = True
 
-            # Agregar la ruta para 'home.urls' si no existe
+            # Verificar o agregar la lista urlpatterns
+            if 'urlpatterns = [' not in urls_content:
+                stdout.write("No se encontró 'urlpatterns'. Creando la lista de rutas desde cero.")
+                urls_content += "\nurlpatterns = [\n    path('admin/', admin.site.urls),\n]\n"
+                updated = True
+
+            # Verificar o agregar la ruta para 'home.urls'
             if "include('home.urls')" not in urls_content:
                 stdout.write("Agregando ruta para 'home.urls'.")
                 urls_content = urls_content.replace(
@@ -112,7 +113,7 @@ urlpatterns = [
                 )
                 updated = True
 
-            # Escribir de nuevo el archivo si hubo cambios
+            # Escribir los cambios si se modificó algo
             if updated:
                 with open(project_urls_path, 'w') as f:
                     f.write(urls_content)
