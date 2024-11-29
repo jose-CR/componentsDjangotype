@@ -3,7 +3,7 @@ import ast
 from django.core.management.base import BaseCommand
 from django.core.management import call_command
 
-class DjangoProjectManager(BaseCommand):
+class DjangoProjectManager:
     def __init__(self, app_name, project_name):
         self.app_name = app_name
         self.project_name = project_name
@@ -46,7 +46,7 @@ class DjangoProjectManager(BaseCommand):
             # Comprobar si la aplicación no está ya en INSTALLED_APPS
             if f"'{self.app_name}'" not in installed_apps_content:
                 # Insertar la aplicación dentro de la lista
-                new_installed_apps = installed_apps_content[:-1] + f"\n'{self.app_name}',\n]"
+                new_installed_apps = installed_apps_content[:-1] + f"'{self.app_name}',\n]"
 
                 # Reemplazar el bloque INSTALLED_APPS con la nueva lista
                 new_settings_content = settings_content[:installed_apps_start] + new_installed_apps + settings_content[installed_apps_end:]
@@ -61,7 +61,7 @@ class DjangoProjectManager(BaseCommand):
         else:
             print(f"'{self.app_name}' ya está en INSTALLED_APPS.")
         
-    def create_urls(self):
+    def create_urls(self, stdout):
             """
             Crea el archivo 'urls.py' si no existe, y si existe, agrega nuevas rutas
             sin sobrescribir el contenido existente.
@@ -70,7 +70,7 @@ class DjangoProjectManager(BaseCommand):
             
             if not os.path.exists(urls_path):
                 # Si el archivo no existe, lo creamos con un contenido básico
-                self.stdout.write(f"Creando el archivo '{urls_path}'...")
+                stdout.write(f"Creando el archivo '{urls_path}'...")
                 with open(urls_path, 'w') as f:
                     f.write("""from django.contrib import admin
 from django.urls import path, include\n\n
@@ -82,7 +82,7 @@ urlpatterns = [
 ]\n""")
             else:
                 # Si el archivo ya existe, lo leemos y agregamos nuevas rutas
-                self.stdout.write(f"El archivo '{urls_path}' ya existe. Agregando nuevas rutas...")
+                stdout.write(f"El archivo '{urls_path}' ya existe. Agregando nuevas rutas...")
                 
                 with open(urls_path, 'r') as f:
                     urls_content = f.read()
@@ -111,11 +111,11 @@ urlpatterns = [
                     # Escribir el contenido actualizado en el archivo
                     with open(urls_path, 'w') as f:
                         f.write(urls_content)
-                    self.stdout.write(f"Nuevas rutas fueron agregadas a '{urls_path}'.")
+                    stdout.write(f"Nuevas rutas fueron agregadas a '{urls_path}'.")
                 else:
-                    self.stdout.write(f"No se encontró la lista 'urlpatterns' en '{urls_path}'.")
+                    stdout.write(f"No se encontró la lista 'urlpatterns' en '{urls_path}'.")
 
-    def creation_auth(self):
+    def creation_auth(self, stdout):
         services_dir = os.path.join(self.app_name, 'services')
         authentication_dir = os.path.join(services_dir, 'authentication')
         os.makedirs(authentication_dir, exist_ok=True)
@@ -123,7 +123,7 @@ urlpatterns = [
         authentication_path = os.path.join(authentication_dir, 'auth.py')
 
         if not os.path.exists(authentication_path):
-            self.stdout.write(f"Creando el archivo '{authentication_path}'...")
+            stdout.write(f"Creando el archivo '{authentication_path}'...")
 
             auth_path = os.path.join(self.app_name, 'services', 'authentication', 'auth.py')
 
@@ -135,9 +135,9 @@ urlpatterns = [
             with open(authentication_path, 'w') as file:
                 file.write(auth_code)
 
-            self.stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue escrito.")
+            stdout.write(f"El archivo '{authentication_path}' fue creado y el código fue escrito.")
         else:
-            self.stdout.write(f"El archivo '{authentication_path}' ya existe.")
+            stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
 
 

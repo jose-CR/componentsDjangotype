@@ -1,6 +1,5 @@
 import os
 from django.core.management.base import BaseCommand
-from django.core.management import call_command
 from services.authenticator_configurator import DjangoProjectManager
 
 class Command(BaseCommand):
