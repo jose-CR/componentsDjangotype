@@ -16,6 +16,9 @@ Este comando de Django te permite crear un componente HTML dentro del directorio
 2. Luego instala el paquete pip `pip install componentsDjangoType`
 3. Agrega `componentsDjangoType` a la lista de aplicaciones instaladas (`INSTALLED_APPS`) en el archivo `settings.py` de tu proyecto de Django.
 
+> [!TIP]
+> Solo istalar versiones estables ej. 1.0.0 o 2.1.0
+
 ## Uso
 
 ### comando para hacer archivos html css y js
