@@ -2,9 +2,17 @@ from setuptools import setup, find_packages
 
 setup(
     name='componentsDjangoType',
-    version='2.0.7',
+    version='2.0.40',
     packages=find_packages(),
     include_package_data=True,
+    package_data={
+        'services': [
+            'utils/js/*.js',
+            'utils/css/*.css',
+            'utils/views/*.html',
+            'utils/views/layouts/*.html',
+        ],
+    },
     license='MIT',
     description='Comandos para crear archivos html, css y js',
     long_description=open('README.md').read(),
@@ -19,8 +27,6 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Framework :: Django :: 3.2',
     ],
     install_requires=[

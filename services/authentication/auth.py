@@ -1,64 +1,65 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth.models import User
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import login, logout
 from django.db import IntegrityError
+from services.authentication.forms import customUserCreationform
+
 class Authentication:
     @staticmethod
     def get_signup(request):
         if request.method == 'GET':
+            # Crear una nueva instancia del formulario en GET
             return render(request, 'signup.html', {
-                'form': UserCreationForm()
+                'form': customUserCreationform()  # Instancia del formulario
             })
         elif request.method == 'POST':
-            if request.POST['password1'] == request.POST['password2']:
+            # Crear una instancia del formulario con los datos enviados
+            form = customUserCreationform(request.POST)
+            if form.is_valid():
                 try:
-                    # Register user\n"
-                    user = User.objects.create_user(
-                        username=request.POST['username'], password=request.POST['password2'])
-                    user.save()
+                    user = form.save()
                     login(request, user)
                     return redirect('logged')
                 except IntegrityError:
+                    # Si ocurre un error de integridad (por ejemplo, nombre de usuario duplicado)
                     return render(request, 'signup.html', {
-                        'form': UserCreationForm(),
-                        'error': 'User already exists'
+                        'form': form,
+                        'error': 'Unable to register. Please try again later.'
                     })
-            return render(request, 'signup.html', {
-                'form': UserCreationForm(),
-                'error': 'Passwords do not match'
-            })
+            else:
+                # Si el formulario no es válido, muestra los errores
+                return render(request, 'signup.html', {
+                    'form': form,
+                    'error': 'Please correct the errors below.'
+                })
+        
     @staticmethod
     def get_signout(request):
         logout(request)
         return redirect('home')
+    
     @staticmethod
     def get_signing(request):
         if request.method == 'GET':
             return render(request, 'login.html', {
-                'form': AuthenticationForm,
+                'form': AuthenticationForm()
             })
         elif request.method == 'POST':
-            try:
-                User.objects.get(username=request.POST['username'])
-            except User.DoesNotExist:
-                return render(request, 'login.html', {
-                    'form': AuthenticationForm,
-                    'error': 'User does not exist in the database'
-                })
-            user = authenticate(
-                request, username=request.POST['username'], password=request.POST['password'])
-            if user is None:
-                return render(request, 'login.html', {
-                    'form': AuthenticationForm,
-                    'error': 'username or password is incorrect'
-                })
-            else:
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                user = form.get_user()
                 login(request, user)
                 return redirect('logged')
+            else:
+                return render(request, 'login.html', {
+                    'form': form,
+                    'error': 'Invalid username or password. Please try again.'
+                })
+
     @staticmethod
     def get_logged(request):
         return render(request, 'logged.html')
+    
     def dispatch(self, request, *args, **kwargs):
         match request.path:
             case "/signup":
