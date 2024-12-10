@@ -1,9 +1,7 @@
 import os
-import ast
-from django.core.management.base import BaseCommand
 from django.core.management import call_command
 from services.authentication import auth
-from services.home import views_page, urls_page
+from services.copy_source import copy_static_file
 
 class DjangoProjectManager:
     def __init__(self, app_name, project_name):
@@ -90,32 +88,44 @@ path('', include('home.urls'))
 
             updated = False
 
-            # Verificar si 'include' está importado
-            if 'include' not in urls_content:
-                stdout.write("Agregando 'include' a los imports.\n")
-                urls_content = urls_content.replace(
-                    "from django.urls import path",
-                    "from django.urls import path, include"  # Asegura que 'include' se agregue
-                )
+            # Verificar si el archivo ya incluye 'include' y 'Home.urls'
+            if "include('Home.urls')" not in urls_content or "from django.urls import include" not in urls_content:
+                stdout.write("Actualizando el archivo 'urls.py' para incluir 'Home.urls'.\n")
+
+                # Sobrescribir el contenido del archivo con la estructura deseada
+                urls_content = '''"""
+URL configuration for myproject project.
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/5.1/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.contrib import admin
+from django.urls import path, include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('Home.urls')),
+]
+        '''
                 updated = True
 
-            # Verificar si la ruta de 'Home.urls' está en 'urlpatterns'
-            if "include('home.urls')" not in urls_content:
-                stdout.write("Agregando ruta para 'home.urls'.\n")
-                # Asegúrate de agregar la ruta en el lugar adecuado dentro de 'urlpatterns'
-                urls_content = urls_content.replace(
-                    "urlpatterns = [",
-                    "urlpatterns = [\n    path('', include('home.urls')),  # Ruta para home\n"
-                )
-                updated = True
-
-            # Escribir los cambios si se modificó algo
+            # Sobrescribir el archivo solo si se actualizó algo
             if updated:
                 with open(project_urls_path, 'w') as f:
                     f.write(urls_content)
-                stdout.write(f"El archivo '{project_urls_path}' fue actualizado.\n")
+                stdout.write(f"El archivo '{project_urls_path}' ha sido actualizado.\n")
             else:
-                stdout.write(f"No fue necesario realizar cambios en '{project_urls_path}'.\n")
+                stdout.write(f"No se realizaron cambios en '{project_urls_path}'.\n")
 
     def creation_auth(self, stdout):
         services_dir = os.path.join(self.app_name, 'services')
@@ -123,7 +133,7 @@ path('', include('home.urls'))
         os.makedirs(authentication_dir, exist_ok=True)
 
         # Ruta para el nuevo archivo a crear
-        authentication_path = os.path.join(authentication_dir, 'authentication.py')
+        authentication_path = os.path.join(authentication_dir, 'auth.py')
 
         # Usar el atributo __file__ del módulo 'auth' para obtener la ruta del archivo fuente
         auth_source_path = os.path.abspath(auth.__file__)
@@ -151,62 +161,92 @@ path('', include('home.urls'))
             stdout.write(f"El archivo '{authentication_path}' ya existe.")
 
     def create_views_urls(self, stdout):
-        home_dir = 'Home'
+        home_dir = 'Home'  # Nombre de la aplicación Home
         views_path = os.path.join(home_dir, 'views.py')
         urls_path = os.path.join(home_dir, 'urls.py')
 
-        # Crear el directorio si no existe
-        os.makedirs(home_dir, exist_ok=True)
-
-        # Verificar y crear views.py
-        views_source_path = os.path.abspath(views_page.__file__)  # Validar existencia
-        if not os.path.exists(views_source_path):
-            stdout.write(f"El archivo fuente '{views_source_path}' no existe.\n")
+        # Crear el directorio de la aplicación Home si no existe
+        if not os.path.exists(home_dir):
+            os.makedirs(home_dir)  # Crear el directorio para la aplicación Home
+            stdout.write(f"Directorio '{home_dir}' creado.\n")
         else:
-            self.create_file(views_source_path, views_path, stdout)
+            stdout.write(f"El directorio '{home_dir}' ya existe.\n")
 
-        # Verificar y crear urls.py
-        urls_source_path = os.path.abspath(urls_page.__file__)  # Validar existencia
-        if not os.path.exists(urls_source_path):
-            stdout.write(f"El archivo fuente '{urls_source_path}' no existe.\n")
+        # Sobrescribir o crear el archivo views.py
+        views_code = '''from django.shortcuts import render
+from services.authentication.auth import Authentication
+
+def home(request):
+    return render(request, 'home.html')
+
+def signup(request):
+    return Authentication.get_signup(request)
+
+def signout(request):
+    return Authentication.get_signout(request)
+
+def signing(request):
+    return Authentication.get_signing(request)
+
+def logged(request):
+    return Authentication.get_logged(request)
+        '''
+        with open(views_path, 'w') as views_file:  # Abrir en modo escritura siempre
+            views_file.write(views_code)
+        stdout.write(f"El archivo '{views_path}' ha sido creado o sobrescrito.\n")
+
+        # Verificar si urls.py existe y crearlo si no existe
+        if not os.path.exists(urls_path):
+            urls_code = '''from django.urls import path
+from . import views
+
+urlpatterns = [
+    path("", views.home, name='home'),
+    path("signup", views.signup, name='signup'),
+    path("login", views.signing, name='login'),
+    path("logout", views.signout, name='logout'),
+    path("logged", views.logged, name='logged'),
+]
+        '''
+            with open(urls_path, 'w') as urls_file:
+                urls_file.write(urls_code)
+            stdout.write(f"El archivo '{urls_path}' ha sido creado.\n")
         else:
-            self.create_file(urls_source_path, urls_path, stdout)
+            stdout.write(f"El archivo '{urls_path}' ya existe.\n")
+        
 
-    def create_file(self, source_path, dest_path, stdout):
-        try:
-            # Leer el contenido del archivo fuente
-            with open(source_path, 'r') as source_file:
-                code = source_file.read()
+    def creation_utils(self, stdout):
 
-            # Crear y escribir el contenido en el archivo de destino
-            with open(dest_path, 'w') as dest_file:
-                dest_file.write(code)
+        app_name = self.app_name
+        #creacion de los directorios
+        templates_dir = os.path.join(app_name, 'templates')
+        static_dir = os.path.join(app_name, 'static')
 
-            stdout.write(f"El archivo '{dest_path}' fue creado y el código fue copiado.\n")
-        except Exception as e:
-            stdout.write(f"Error al copiar el archivo: {e}\n")
+        #creacin de subcarpetas
+        layouts_dir =  os.path.join(templates_dir, 'layouts')
+        js_dir = os.path.join(static_dir, 'js')
+        css_dir = os.path.join(static_dir, 'css')
 
+        # Crear las carpetas principales y subcarpetas
+        os.makedirs(templates_dir, exist_ok=True)
+        os.makedirs(layouts_dir, exist_ok=True)
+        os.makedirs(static_dir, exist_ok=True)
+        os.makedirs(js_dir, exist_ok=True)
+        os.makedirs(css_dir, exist_ok=True)      
 
+        stdout.write("Estructura de carpetas creada.\n")
 
+        files_to_copy = [
+            ("services.utils.js", "alertErrors.js", os.path.join(js_dir, "alertErrors.js")),
+            ("services.utils.css", "authentication.css", os.path.join(css_dir, "authentication.css")),
+            ("services.utils.views.layouts", "index.html", os.path.join(layouts_dir, "index.html")),
+            ("services.utils.views", "home.html", os.path.join(templates_dir, "home.html")),
+            ("services.utils.views", "signup.html", os.path.join(templates_dir, "signup.html")),
+            ("services.utils.views", "login.html", os.path.join(templates_dir, "login.html")),
+            ("services.utils.views", "logged.html", os.path.join(templates_dir, "logged.html")),
+        ]
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        for package, resource_name, destination_path in files_to_copy:
+            copy_static_file(package, resource_name, destination_path, stdout)
+        
+        stdout.write("Archivos estáticos copiados.\n")

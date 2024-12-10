@@ -1,0 +1,7 @@
+{
+    "python.analysis.extraPaths": [
+        "./myproject",
+        "./myproject",
+        "./myproject/Home/services/authentication"
+    ]
+}
